@@ -23,7 +23,7 @@ window.EMOJI_ASSETS = {
 // Variables para almacenar rutas de imágenes locales
 let imagePaths = {
     snoopy: 'snoopy1.png',                 // Imagen principal de Snoopy
-    snoopyDialogs: 'snoopy1.png',          // Para diálogos/character
+    snoopyDialogs: '1911.jpg',          // Para diálogos/character
     plants: {
         shooter: 'snoopy1.png',
         bomb: 'snoopy4.png',

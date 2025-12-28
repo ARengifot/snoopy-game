@@ -199,28 +199,18 @@ let gameState = {
     completedLevels: []
 };
 
-let imagePaths = {
-    snoopy: '',
-    plants: {
-        shooter: '',
-        bomb: '',
-        ice: '',
-        light: '',
-        shield: ''
-    },
-    zombies: {
-        normal: '',
-        fast: '',
-        strong: '',
-        armored: '',
-        boss: ''
-    }
-};
-
 // INICIALIZACIÓN
 window.addEventListener('DOMContentLoaded', () => {
     console.log('🎮 Snoopy vs Zombies - v2.0 Iniciando...');
     loadGameData();
+    
+    // Cargar imágenes desde assets-config.js
+    if (typeof imagePaths !== 'undefined') {
+        const menuSnoopy = document.getElementById('menuSnoopy');
+        if (menuSnoopy && imagePaths.snoopy) {
+            menuSnoopy.src = imagePaths.snoopy;
+        }
+    }
     
     // Cargar assets y mostrar intro después de un pequeño delay
     setTimeout(() => {
@@ -256,47 +246,33 @@ function showIntro() {
     
     // Después de 3 segundos, ir al menú
     setTimeout(() => {
+        // Ocultar intro completamente
+        introScreen.style.display = 'none';
         introScreen.classList.remove('active');
-        updateLevelDisplay();
+        
+        // Mostrar menú
+        switchScreen('mainMenu');
     }, 3000);
 }
 
 // NAVEGACIÓN DE MENÚS
 function startGame() {
+    console.log('✅ Función startGame() ejecutada');
     switchScreen('levelSelectScreen');
-    updateLevelDisplay();
-}
-
-function updateLevelDisplay() {
-    for (let i = 1; i <= 5; i++) {
-        const score = gameState.levelScores[i - 1];
-        const stars = calculateStars(score);
-        
-        document.getElementById(`stars-${i}`).textContent = stars;
-        document.getElementById(`score-${i}`).textContent = score + ' pts';
-    }
-    
-    const completedCount = gameState.completedLevels.length;
-    document.getElementById('levelsCompleted').textContent = `${completedCount}/5`;
-    document.getElementById('totalScore').textContent = gameState.totalScore;
-}
-
-function calculateStars(score) {
-    if (score >= 150) return '⭐⭐⭐';
-    if (score >= 100) return '⭐⭐☆';
-    if (score >= 50) return '⭐☆☆';
-    return '☆☆☆';
 }
 
 function showInstructions() {
+    console.log('✅ Función showInstructions() ejecutada');
     switchScreen('instructionsScreen');
 }
 
 function showAbout() {
+    console.log('✅ Función showAbout() ejecutada');
     switchScreen('aboutScreen');
 }
 
 function backToMenu() {
+    console.log('✅ Función backToMenu() ejecutada');
     switchScreen('mainMenu');
 }
 
@@ -319,6 +295,15 @@ function selectLevel(level) {
     startLevelGame();
 }
 
+function loadPlantImages() {
+    // Cargar imágenes de las plantas en la barra superior
+    document.getElementById('plantShooter').src = imagePaths.plants.shooter;
+    document.getElementById('plantBomb').src = imagePaths.plants.bomb;
+    document.getElementById('plantIce').src = imagePaths.plants.ice;
+    document.getElementById('plantLight').src = imagePaths.plants.light;
+    document.getElementById('plantShield').src = imagePaths.plants.shield;
+}
+
 function startLevelGame() {
     // Ocultar menús
     document.querySelectorAll('.menu-screen').forEach(screen => {
@@ -328,6 +313,9 @@ function startLevelGame() {
     // Mostrar pantalla de juego
     const gameScreen = document.getElementById('gameScreen');
     gameScreen.classList.add('active');
+
+    // Cargar imágenes de plantas en la barra superior
+    loadPlantImages();
 
     // Reiniciar estado del juego
     gameState.suns = 100 + (gameState.currentLevel * 25);
@@ -398,6 +386,9 @@ function closeStoryAndStart() {
 function createGameBoard() {
     const gameBoard = document.querySelector('.game-board');
     gameBoard.innerHTML = '';
+    
+    // Reinicializar lanes
+    gameState.lanes = [];
 
     for (let i = 0; i < GAME_CONFIG.lanes; i++) {
         const lane = document.createElement('div');
@@ -449,11 +440,14 @@ function plantOnCell(event, lane, col) {
         return;
     }
 
-    // Crear planta
+    // Crear planta con imagen
     const plantElement = document.createElement('img');
     plantElement.src = imagePaths.plants[plantType];
     plantElement.className = 'plant';
     plantElement.alt = PLANTS[plantType].name;
+    plantElement.style.width = '100%';
+    plantElement.style.height = '100%';
+    plantElement.style.objectFit = 'contain';
 
     cell.appendChild(plantElement);
     cell.classList.add('occupied');
@@ -465,7 +459,8 @@ function plantOnCell(event, lane, col) {
         col: col,
         element: plantElement,
         lastShot: 0,
-        health: 3
+        health: PLANTS[plantType].protective ? 500 : 100, // Escudo tiene más vida
+        lastDamageTime: 0
     };
 
     gameState.lanes[lane].plants.push(plant);
@@ -480,7 +475,8 @@ function plantOnCell(event, lane, col) {
 }
 
 function plantStartAttacking(plant) {
-    if (PLANTS[plant.type].damage === 0) return; // Escudo no ataca
+    // Escudo no ataca, solo protege
+    if (plant.type === 'shield') return;
 
     const attackInterval = setInterval(() => {
         if (!gameState.gameActive) {
@@ -497,85 +493,91 @@ function plantStartAttacking(plant) {
 }
 
 function plantAttack(plant) {
-    const zombiesInRange = gameState.lanes[plant.lane].zombies.filter(z => {
-        const distance = Math.abs(z.position - plant.col);
-        return distance <= PLANTS[plant.type].range / 100;
+    const plantType = plant.type;
+    
+    // Luz solo genera soles, no ataca
+    if (plantType === 'light') {
+        gameState.suns += 5;
+        updateGameUI();
+        
+        // Animación de luz
+        plant.element.style.animation = 'none';
+        setTimeout(() => {
+            plant.element.style.animation = 'lightAttack 0.3s ease-in-out';
+        }, 10);
+        return;
+    }
+    
+    // Escudo no hace nada
+    if (plantType === 'shield') {
+        return;
+    }
+
+    // Obtener todos los zombies en el carril
+    const zombiesInLane = gameState.lanes[plant.lane].zombies;
+    
+    if (zombiesInLane.length === 0) return;
+
+    // Encontrar el zombie más cercano (el que está más a la izquierda/más adentro)
+    let targetZombie = null;
+    let closestPosition = Infinity;
+
+    zombiesInLane.forEach(zombie => {
+        if (zombie.position < closestPosition) {
+            closestPosition = zombie.position;
+            targetZombie = zombie;
+        }
     });
 
-    if (zombiesInRange.length === 0) return;
+    if (!targetZombie) return;
 
-    const target = zombiesInRange[0];
-    const plantType = plant.type;
-
-    // Animaciones únicas por tipo de planta
+    // Animación de la planta atacando
     plant.element.style.animation = 'none';
     setTimeout(() => {
         switch(plantType) {
             case 'shooter':
-                // Disparo rápido y repetitivo
                 plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
                 break;
             case 'bomb':
-                // Expansión y contracción explosiva
                 plant.element.style.animation = 'bombAttack 0.5s ease-in-out';
                 break;
             case 'ice':
-                // Pulso de congelación
                 plant.element.style.animation = 'iceAttack 0.4s ease-in-out';
-                break;
-            case 'light':
-                // Destello de luz (no ataca)
-                plant.element.style.animation = 'lightAttack 0.3s ease-in-out';
-                break;
-            case 'shield':
-                // Sin ataque
                 break;
             default:
                 plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
         }
     }, 10);
 
-    // Luz y Escudo NO atacan
-    if (plantType === 'light' || plantType === 'shield') {
-        // Luz da soles cuando aparece
-        if (plantType === 'light') {
-            gameState.suns += 5;
-            updateGameUI();
-        }
-        return;
-    }
-
-    // Crear efecto visual de proyectil para plantas que atacan
+    // Crear proyectil visual
     if (PLANTS[plantType].damage > 0) {
-        createProjectile(plant, target);
+        createProjectile(plant, targetZombie);
     }
 
     // Aplicar daño
-    target.health -= PLANTS[plantType].damage;
+    targetZombie.health -= PLANTS[plantType].damage;
 
-    if (PLANTS[plantType].slowFactor) {
-        target.currentSpeed = target.speed * PLANTS[plantType].slowFactor;
+    // Efecto de hielo (ralentizar)
+    if (plantType === 'ice' && PLANTS[plantType].slowFactor) {
+        targetZombie.currentSpeed = targetZombie.speed * PLANTS[plantType].slowFactor;
         setTimeout(() => {
-            target.currentSpeed = target.speed;
+            targetZombie.currentSpeed = targetZombie.speed;
         }, 3000);
     }
 
-    if (target.health <= 0) {
-        // Crear efecto visual de muerte
-        createDeathEffect(target.element);
-        
-        target.element.remove();
-        gameState.lanes[plant.lane].zombies = gameState.lanes[plant.lane].zombies.filter(z => z !== target);
-        gameState.zombies = gameState.zombies.filter(z => z !== target);
+    // Si el zombie muere
+    if (targetZombie.health <= 0) {
+        createDeathEffect(targetZombie.element);
+        targetZombie.element.remove();
+        gameState.lanes[plant.lane].zombies = gameState.lanes[plant.lane].zombies.filter(z => z !== targetZombie);
+        gameState.zombies = gameState.zombies.filter(z => z !== targetZombie);
         gameState.zombiesDefeated++;
         gameState.suns += 25;
         
-        // Crear efecto visual de recolección de soles
-        createSunCollectEffect(target.element, 25);
-        
+        createSunCollectEffect(targetZombie.element, 25);
         updateGameUI();
 
-        // Mensaje de amor aleatorio
+        // Mensaje aleatorio
         if (Math.random() < 0.3) {
             const message = LOVE_MESSAGES[Math.floor(Math.random() * LOVE_MESSAGES.length)];
             showLoveNotification(message);
@@ -690,10 +692,17 @@ function spawnZombie(type, laneIndex) {
     const zombieConfig = ZOMBIES[type];
     const laneElement = gameState.lanes[laneIndex].laneElement;
 
+    console.log(`🧟 Spawnando zombie tipo: ${type} en carril: ${laneIndex}`, gameState.gameActive);
+
     const zombieElement = document.createElement('img');
     zombieElement.src = imagePaths.zombies[type];
     zombieElement.alt = zombieConfig.name;
+    zombieElement.className = 'zombie';
+    zombieElement.style.width = '80px';
+    zombieElement.style.height = '80px';
+    zombieElement.style.objectFit = 'contain';
     zombieElement.style.right = '0px';
+    zombieElement.style.position = 'absolute';
 
     laneElement.appendChild(zombieElement);
 
@@ -713,6 +722,8 @@ function spawnZombie(type, laneIndex) {
     gameState.zombies.push(zombie);
     gameState.zombiesSpawned++;
 
+    console.log(`✅ Zombie creado. Total zombies: ${gameState.zombies.length}`);
+
     moveZombie(zombie);
 }
 
@@ -724,24 +735,19 @@ function moveZombie(zombie) {
         }
 
         const laneElement = gameState.lanes[zombie.lane].laneElement;
-        const gardenElement = laneElement.previousElementSibling;
 
+        // Simplemente mover hacia la izquierda
         zombie.position -= zombie.currentSpeed;
         zombie.element.style.right = zombie.position + 'px';
 
         // Verificar si llegó al final - PODADORA activada
         if (zombie.position <= -100) {
             clearInterval(moveInterval);
-            
-            // Activar podadora - mata todos los zombies de esta fila
             activateLawnMower(zombie.lane);
-            
-            // Remover este zombie
             zombie.element.remove();
             gameState.lanes[zombie.lane].zombies = gameState.lanes[zombie.lane].zombies.filter(z => z !== zombie);
             gameState.zombies = gameState.zombies.filter(z => z !== zombie);
-
-            }
+            checkWaveComplete();
         }
     }, 50);
 }
@@ -1093,5 +1099,32 @@ function setImagePaths(config) {
     console.log('Imágenes cargadas correctamente');
 }
 
-// EXPORTAR FUNCIÓN PARA PODER USARLA
+// EXPORTAR TODAS LAS FUNCIONES GLOBALES PARA QUE FUNCIONEN LOS ONCLICK
 window.setImagePaths = setImagePaths;
+window.startGame = startGame;
+window.showInstructions = showInstructions;
+window.showAbout = showAbout;
+window.backToMenu = backToMenu;
+window.selectLevel = selectLevel;
+window.selectPlant = selectPlant;
+window.pauseGame = pauseGame;
+window.resumeGame = resumeGame;
+window.goToMenu = goToMenu;
+window.nextLevel = nextLevel;
+window.restartLevel = restartLevel;
+window.closeStoryAndStart = closeStoryAndStart;
+window.loseLevel = loseLevel;
+window.switchScreen = switchScreen;
+window.startGame = startGame;
+window.showInstructions = showInstructions;
+window.showAbout = showAbout;
+window.backToMenu = backToMenu;
+window.selectLevel = selectLevel;
+window.selectPlant = selectPlant;
+window.pauseGame = pauseGame;
+window.resumeGame = resumeGame;
+window.goToMenu = goToMenu;
+window.nextLevel = nextLevel;
+window.restartLevel = restartLevel;
+window.closeStoryAndStart = closeStoryAndStart;
+window.loseLevel = loseLevel;

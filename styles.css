@@ -346,7 +346,7 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: url('snoopy-summer-meadow-bloom-pc-wallpaper-cover.jpg') center/cover no-repeat;
+    background: url('snoopy-sum.jpg') center/cover no-repeat;
     display: none;
     justify-content: center;
     align-items: center;
@@ -381,7 +381,7 @@ body {
 }
 
 .parallax-1 {
-    background: url('https://www.xtrafondos.com/wallpapers/snoopy-en-halloween-12759.jpg') center/cover no-repeat fixed;
+    background: url('snoopy-sum.jpg') center/cover no-repeat fixed;
     opacity: 0.7;
     animation: float 20s ease-in-out infinite;
 }
@@ -969,7 +969,7 @@ body {
     gap: 10px;
     padding: 20px;
     overflow-y: auto;
-    background-image: url('Gemini_Generated_Image_4yvj7l4yvj7l4yvj.png');
+    background-image: url('Gemini_Generated_Image_migl0gmigl0gmigl.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -1185,12 +1185,11 @@ body {
     transform: translateY(-50%);
     width: 85px;
     height: 85px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    animation: moveLeft linear forwards, zombieWalk 0.8s ease-in-out infinite;
+    object-fit: contain;
+    animation: zombieWalk 0.8s ease-in-out infinite;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 4px rgba(255, 100, 100, 0.2));
     transition: filter 0.2s ease;
+    z-index: 10;
 }
 
 .zombie:hover {
@@ -2224,6 +2223,7 @@ body {
         right: 10px;
         left: 10px;
         max-width: none;
+        top: 80px;
     }
 }
 
