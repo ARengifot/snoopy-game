@@ -22,21 +22,21 @@ window.EMOJI_ASSETS = {
 
 // Variables para almacenar rutas de imágenes locales
 let imagePaths = {
-    snoopy: 'snoopy1.png',                 // Imagen principal de Snoopy
-    snoopyDialogs: '1911.jpg',          // Para diálogos/character
+    snoopy: './snoopy1.png',                 // Imagen principal de Snoopy
+    snoopyDialogs: './1911.jpg',          // Para diálogos/character
     plants: {
-        shooter: 'snoopy1.png',
-        bomb: 'snoopy4.png',
-        ice: 'snoopy5.png',
-        light: 'snoopy2.png',              // Luz - como dijiste
-        shield: 'snoopy3.png'              // Escudo - como dijiste
+        shooter: './snoopy1.png',
+        bomb: './snoopy4.png',
+        ice: './snoopy5.png',
+        light: './snoopy2.png',              // Luz - como dijiste
+        shield: './snoopy3.png'              // Escudo - como dijiste
     },
     zombies: {
-        normal: 'zombie1.png',
-        fast: 'zombie2.png',
-        strong: 'zombie3.png',
-        armored: 'zombie4.png',
-        boss: 'zombie5.jpg'
+        normal: './zombie1.png',
+        fast: './zombie2.png',
+        strong: './zombie3.png',
+        armored: './zombie4.png',
+        boss: './zombie5.jpg'
     }
 };
 

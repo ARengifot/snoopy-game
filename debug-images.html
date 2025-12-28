@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug - Carga de Imágenes</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .test { 
+            margin: 20px 0; 
+            padding: 10px; 
+            border: 1px solid #ddd;
+            background: white;
+        }
+        img { max-width: 100px; height: auto; border: 1px solid red; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Debug - Carga de Imágenes</h1>
+    <p>Este archivo testa si las imágenes se cargan correctamente</p>
+
+    <div class="test">
+        <h2>Test 1: Rutas simples (snoopy1.png)</h2>
+        <img src="snoopy1.png" alt="snoopy1.png" id="test1">
+        <div id="result1"></div>
+    </div>
+
+    <div class="test">
+        <h2>Test 2: Rutas con ./ (./snoopy1.png)</h2>
+        <img src="./snoopy1.png" alt="./snoopy1.png" id="test2">
+        <div id="result2"></div>
+    </div>
+
+    <div class="test">
+        <h2>Test 3: Zombie (zombie1.png)</h2>
+        <img src="zombie1.png" alt="zombie1.png" id="test3">
+        <div id="result3"></div>
+    </div>
+
+    <div class="test">
+        <h2>Test 4: Zombie Boss (zombie5.jpg)</h2>
+        <img src="zombie5.jpg" alt="zombie5.jpg" id="test4">
+        <div id="result4"></div>
+    </div>
+
+    <script>
+        const images = [
+            { id: 'test1', src: 'snoopy1.png' },
+            { id: 'test2', src: './snoopy1.png' },
+            { id: 'test3', src: 'zombie1.png' },
+            { id: 'test4', src: 'zombie5.jpg' }
+        ];
+
+        images.forEach((img, index) => {
+            const element = document.getElementById(img.id);
+            const resultDiv = document.getElementById(`result${index + 1}`);
+            
+            element.onload = () => {
+                resultDiv.innerHTML = `<span class="success">✅ Cargada correctamente: ${img.src}</span>`;
+            };
+            
+            element.onerror = () => {
+                resultDiv.innerHTML = `<span class="error">❌ Error cargando: ${img.src}</span>`;
+            };
+        });
+
+        // Verificar archivos disponibles
+        fetch('./')
+            .then(r => r.text())
+            .then(html => {
+                console.log('Archivos disponibles en servidor:', html);
+            })
+            .catch(e => console.error('Error:', e));
+    </script>
+</body>
+</html>
