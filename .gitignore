@@ -1,0 +1,24 @@
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Node/npm
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Compilados
+*.pyc
+__pycache__/
+
+# Local
+.env
+.env.local

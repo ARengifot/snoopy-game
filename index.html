@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snoopy vs Zombies - 9 Meses de Amor 💕</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- PANTALLA DE CARGA -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <h1>Snoopy vs Zombies</h1>
+            <p>Un juego especial para Valentina 💕</p>
+            <div class="spinner"></div>
+            <p class="loading-text">Cargando amor...</p>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE INTRO ÉPICA -->
+    <div id="introScreen" class="intro-screen">
+        <video class="intro-video" autoplay muted id="introVideo">
+            <source src="" type="video/mp4">
+        </video>
+        <div class="intro-overlay">
+            <div class="intro-content">
+                <div class="intro-logo">
+                    <h1 class="intro-title">SNOOPY</h1>
+                    <p class="intro-subtitle">VS</p>
+                    <h2 class="intro-title-2">ZOMBIES</h2>
+                </div>
+                <div class="intro-text">
+                    <p class="intro-tagline">Un juego de defensa épico</p>
+                    <p class="intro-dedication">Dedicado a 9 meses de amor eterno 💕</p>
+                </div>
+                <div class="intro-loading">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="intro-status">Iniciando aventura...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENÚ PRINCIPAL ÉPICO -->
+    <div id="mainMenu" class="menu-screen active">
+        <div class="menu-background">
+            <div class="parallax-layer parallax-1"></div>
+            <div class="parallax-layer parallax-2"></div>
+            <div class="parallax-layer parallax-3"></div>
+        </div>
+        <div class="menu-content epic-menu">
+            <div class="menu-stars">
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+            </div>
+            
+            <div class="menu-header">
+                <img id="menuSnoopy" src="" alt="Snoopy" class="snoopy-mascot animated-mascot">
+                <div class="title-glow">
+                    <h1 class="title-main">SNOOPY vs ZOMBIES</h1>
+                </div>
+                <p class="subtitle glow-text">🎮 9 Meses de Amor Infinito 💕</p>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn btn-play epic-btn" onclick="startGame()">
+                    <span class="btn-icon">▶</span>
+                    <span>JUGAR AHORA</span>
+                </button>
+                <button class="btn btn-instructions epic-btn" onclick="showInstructions()">
+                    <span class="btn-icon">?</span>
+                    <span>INSTRUCCIONES</span>
+                </button>
+                <button class="btn btn-about epic-btn" onclick="showAbout()">
+                    <span class="btn-icon">♥</span>
+                    <span>SOBRE ESTE JUEGO</span>
+                </button>
+            </div>
+
+            <div class="menu-footer">
+                <p class="footer-text">Feliz mes de amor, Valentina 💕</p>
+                <p class="version-text">v2.0 - Edición Mejorada</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE INSTRUCCIONES -->
+    <div id="instructionsScreen" class="menu-screen">
+        <div class="menu-content">
+            <button class="btn-back" onclick="backToMenu()">← Volver</button>
+            <h2>¿Cómo Jugar?</h2>
+            
+            <div class="instructions-content">
+                <div class="instruction-section">
+                    <h3>🎯 Objetivo</h3>
+                    <p>Ayuda a Snoopy a defender su jardín usando plantas especiales para eliminar zombies antes de que invadan.</p>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>🌱 Plantas Disponibles</h3>
+                    <ul>
+                        <li><strong>Snoopy Tirador:</strong> Dispara a los zombies continuamente</li>
+                        <li><strong>Snoopy Bomba:</strong> Explota cerca del zombi más cercano</li>
+                        <li><strong>Snoopy Hielo:</strong> Congela zombies ralentizándolos</li>
+                        <li><strong>Snoopy Luz:</strong> Ilumina y daña zombies oscuros</li>
+                        <li><strong>Snoopy Escudo:</strong> Protege plantas cercanas</li>
+                    </ul>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>🧟 Tipos de Zombies</h3>
+                    <ul>
+                        <li><strong>Zombi Normal:</strong> Débil, avanza lentamente</li>
+                        <li><strong>Zombi Rápido:</strong> Muy veloz pero poco resistente</li>
+                        <li><strong>Zombi Fuerte:</strong> Mucha vida, ataque lento</li>
+                        <li><strong>Zombi Coraza:</strong> Casco protector, muy resistente</li>
+                        <li><strong>Zombi Jefe:</strong> El más peligroso, aparece al final</li>
+                    </ul>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>⚡ Mecánicas</h3>
+                    <ul>
+                        <li>Haz clic en una celda del jardín para colocar plantas</li>
+                        <li>Ganas soles que puedes usar para plantar</li>
+                        <li>Cada planta cuesta cierta cantidad de soles</li>
+                        <li>Elimina todos los zombies para ganar la ronda</li>
+                        <li>¡No dejes que los zombies lleguen al final!</li>
+                    </ul>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>❤️ Mensaje Especial</h3>
+                    <p>Mientras juegas, recibirás mensajes de amor de parte de Snoopy para Valentina. ¡Que disfrutes! 💕</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA SOBRE EL JUEGO -->
+    <div id="aboutScreen" class="menu-screen">
+        <div class="menu-content">
+            <button class="btn-back" onclick="backToMenu()">← Volver</button>
+            <h2>Sobre Este Juego</h2>
+            
+            <div class="about-content">
+                <div class="about-section">
+                    <h3>💕 Un Juego Especial</h3>
+                    <p>Este juego fue creado especialmente para celebrar 9 meses de amor con Valentina.</p>
+                </div>
+
+                <div class="about-section">
+                    <h3>🐕 Snoopy es el Protagonista</h3>
+                    <p>El valiente beagle Snoopy defiende su jardín con diferentes plantas mágicas para eliminar invasores zombies. Juntos, protegeremos el amor.</p>
+                </div>
+
+                <div class="about-section">
+                    <h3>🎮 Características</h3>
+                    <ul>
+                        <li>5 Niveles progresivamente más difíciles</li>
+                        <li>5 Plantas diferentes cada una con habilidades únicas</li>
+                        <li>5 Tipos de zombies con diferentes características</li>
+                        <li>Mensajes románticos durante el juego</li>
+                        <li>Gráficos animados y música de ambiente</li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h3>❤️ Dedica a Valentina</h3>
+                    <p><em>"Cada planta que plantas representa un momento compartido, cada zombi derrotado es un obstáculo superado juntos. 9 meses de amor que duran para siempre."</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE SELECCIÓN DE NIVEL -->
+    <div id="levelSelectScreen" class="menu-screen">
+        <div class="menu-background">
+            <div class="parallax-layer parallax-1"></div>
+            <div class="parallax-layer parallax-2"></div>
+        </div>
+        <div class="menu-content level-select-content">
+            <button class="btn-back" onclick="backToMenu()">← Volver</button>
+            <h2 class="section-title">ELIGE TU DESTINO</h2>
+            
+            <div class="level-grid">
+                <div class="level-card" onclick="selectLevel(1)">
+                    <div class="level-bg level-1-bg"></div>
+                    <div class="level-content">
+                        <span class="level-number">1</span>
+                        <span class="level-name">Comienzo Tranquilo</span>
+                        <span class="level-desc">Pocos zombies</span>
+                        <div class="level-stars">
+                            <span class="star-display" id="stars-1">☆☆☆</span>
+                        </div>
+                        <span class="level-score" id="score-1">0 pts</span>
+                    </div>
+                </div>
+                <div class="level-card" onclick="selectLevel(2)">
+                    <div class="level-bg level-2-bg"></div>
+                    <div class="level-content">
+                        <span class="level-number">2</span>
+                        <span class="level-name">Más Desafío</span>
+                        <span class="level-desc">Más enemigos</span>
+                        <div class="level-stars">
+                            <span class="star-display" id="stars-2">☆☆☆</span>
+                        </div>
+                        <span class="level-score" id="score-2">0 pts</span>
+                    </div>
+                </div>
+                <div class="level-card" onclick="selectLevel(3)">
+                    <div class="level-bg level-3-bg"></div>
+                    <div class="level-content">
+                        <span class="level-number">3</span>
+                        <span class="level-name">Batalla Media</span>
+                        <span class="level-desc">Zombies variados</span>
+                        <div class="level-stars">
+                            <span class="star-display" id="stars-3">☆☆☆</span>
+                        </div>
+                        <span class="level-score" id="score-3">0 pts</span>
+                    </div>
+                </div>
+                <div class="level-card" onclick="selectLevel(4)">
+                    <div class="level-bg level-4-bg"></div>
+                    <div class="level-content">
+                        <span class="level-number">4</span>
+                        <span class="level-name">Muy Difícil</span>
+                        <span class="level-desc">Intenso y peligroso</span>
+                        <div class="level-stars">
+                            <span class="star-display" id="stars-4">☆☆☆</span>
+                        </div>
+                        <span class="level-score" id="score-4">0 pts</span>
+                    </div>
+                </div>
+                <div class="level-card final-level" onclick="selectLevel(5)">
+                    <div class="level-bg level-5-bg"></div>
+                    <div class="level-content">
+                        <span class="level-number">5</span>
+                        <span class="level-name">Modo Extremo</span>
+                        <span class="level-desc">¡Batalla definitiva!</span>
+                        <div class="level-stars">
+                            <span class="star-display" id="stars-5">☆☆☆</span>
+                        </div>
+                        <span class="level-score" id="score-5">0 pts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="level-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Puntuación Total:</span>
+                    <span class="stat-value" id="totalScore">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Niveles Completados:</span>
+                    <span class="stat-value" id="levelsCompleted">0/5</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JUEGO PRINCIPAL -->
+    <div id="gameScreen" class="game-screen">
+        <div class="game-header">
+            <div class="game-info">
+                <div class="info-item">
+                    <span class="info-label">Soles:</span>
+                    <span id="suns" class="info-value">100</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Nivel:</span>
+                    <span id="levelDisplay" class="info-value">1</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Zombies:</span>
+                    <span id="zombieCount" class="info-value">0</span>
+                </div>
+            </div>
+            <h2 id="gameTitle">Snoopy vs Zombies</h2>
+            <button class="btn-menu" onclick="pauseGame()">⏸ Pausa</button>
+        </div>
+
+        <!-- SELECTOR DE PLANTAS -->
+        <div class="plant-selector">
+            <div class="plant-slot" onclick="selectPlant('shooter')" data-plant="shooter">
+                <img id="plantShooter" src="" alt="Tirador" class="plant-icon">
+                <div class="plant-info">
+                    <p class="plant-name">Tirador</p>
+                    <p class="plant-cost">75 ☀</p>
+                </div>
+            </div>
+            <div class="plant-slot" onclick="selectPlant('bomb')" data-plant="bomb">
+                <img id="plantBomb" src="" alt="Bomba" class="plant-icon">
+                <div class="plant-info">
+                    <p class="plant-name">Bomba</p>
+                    <p class="plant-cost">150 ☀</p>
+                </div>
+            </div>
+            <div class="plant-slot" onclick="selectPlant('ice')" data-plant="ice">
+                <img id="plantIce" src="" alt="Hielo" class="plant-icon">
+                <div class="plant-info">
+                    <p class="plant-name">Hielo</p>
+                    <p class="plant-cost">100 ☀</p>
+                </div>
+            </div>
+            <div class="plant-slot" onclick="selectPlant('light')" data-plant="light">
+                <img id="plantLight" src="" alt="Luz" class="plant-icon">
+                <div class="plant-info">
+                    <p class="plant-name">Luz</p>
+                    <p class="plant-cost">125 ☀</p>
+                </div>
+            </div>
+            <div class="plant-slot" onclick="selectPlant('shield')" data-plant="shield">
+                <img id="plantShield" src="" alt="Escudo" class="plant-icon">
+                <div class="plant-info">
+                    <p class="plant-name">Escudo</p>
+                    <p class="plant-cost">200 ☀</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLERO DE JUEGO -->
+        <div class="game-board">
+            <div class="lane lane-1">
+                <div class="garden"></div>
+                <div class="zombie-lane"></div>
+            </div>
+            <div class="lane lane-2">
+                <div class="garden"></div>
+                <div class="zombie-lane"></div>
+            </div>
+            <div class="lane lane-3">
+                <div class="garden"></div>
+                <div class="zombie-lane"></div>
+            </div>
+            <div class="lane lane-4">
+                <div class="garden"></div>
+                <div class="zombie-lane"></div>
+            </div>
+            <div class="lane lane-5">
+                <div class="garden"></div>
+                <div class="zombie-lane"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PAUSA -->
+    <div id="pauseModal" class="modal">
+        <div class="modal-content">
+            <h2>Juego Pausado</h2>
+            <p>¿Qué deseas hacer?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-continue" onclick="resumeGame()">Continuar</button>
+                <button class="btn btn-menu" onclick="goToMenu()">Ir al Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE VICTORIA -->
+    <div id="victoryModal" class="modal">
+        <div class="modal-content victory">
+            <h2>¡VICTORIA! 🎉</h2>
+            <p id="victoryText"></p>
+            <p class="love-message" id="victoryMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-next" onclick="nextLevel()">Siguiente Nivel</button>
+                <button class="btn btn-menu" onclick="goToMenu()">Ir al Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DERROTA -->
+    <div id="defeatModal" class="modal">
+        <div class="modal-content defeat">
+            <h2>Zombies Ganaron 🧟</h2>
+            <p id="defeatText"></p>
+            <p class="love-message">Pero tu amor nos motiva a seguir intentando ❤️</p>
+            <div class="modal-buttons">
+                <button class="btn btn-retry" onclick="restartLevel()">Reintentar</button>
+                <button class="btn btn-menu" onclick="goToMenu()">Ir al Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIONES DE AMOR -->
+    <div id="loveNotification" class="love-notification">
+        <p id="loveMessage"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
