@@ -499,7 +499,7 @@ function plantAttack(plant) {
     const target = zombiesInRange[0];
     const plantType = plant.type;
 
-    // Agregar animación de disparo a la planta
+    // Agregar animación de disparo a la planta con feedback visual
     plant.element.style.animation = 'none';
     setTimeout(() => {
         plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
@@ -521,6 +521,9 @@ function plantAttack(plant) {
     }
 
     if (target.health <= 0) {
+        // Crear efecto visual de muerte
+        createDeathEffect(target.element);
+        
         target.element.remove();
         gameState.lanes[plant.lane].zombies = gameState.lanes[plant.lane].zombies.filter(z => z !== target);
         gameState.zombies = gameState.zombies.filter(z => z !== target);
@@ -830,6 +833,51 @@ function showLoveNotification(message) {
     setTimeout(() => {
         notification.classList.remove('show');
     }, 4000);
+}
+
+// CREAR EFECTO VISUAL DE MUERTE
+function createDeathEffect(zombieElement) {
+    const rect = zombieElement.getBoundingClientRect();
+    
+    // Crear explosión de partículas
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        const angle = (360 / 8) * i;
+        const distance = 80;
+        const tx = Math.cos(angle * Math.PI / 180) * distance;
+        const ty = Math.sin(angle * Math.PI / 180) * distance;
+        
+        particle.style.position = 'fixed';
+        particle.style.left = rect.left + rect.width / 2 + 'px';
+        particle.style.top = rect.top + rect.height / 2 + 'px';
+        particle.style.width = '12px';
+        particle.style.height = '12px';
+        particle.style.background = i % 2 === 0 ? '#FFD700' : '#FF6B6B';
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.setProperty('--tx', tx + 'px');
+        particle.style.setProperty('--ty', ty + 'px');
+        particle.style.animation = `particleExplode 0.6s ease-out forwards`;
+        particle.style.animationDelay = (i * 0.05) + 's';
+        document.body.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 600);
+    }
+    
+    // Crear efecto de destello
+    const flash = document.createElement('div');
+    flash.style.position = 'fixed';
+    flash.style.left = rect.left + 'px';
+    flash.style.top = rect.top + 'px';
+    flash.style.width = rect.width + 'px';
+    flash.style.height = rect.height + 'px';
+    flash.style.background = 'radial-gradient(circle, rgba(255, 255, 0, 0.8) 0%, transparent 70%)';
+    flash.style.borderRadius = '50%';
+    flash.style.pointerEvents = 'none';
+    flash.style.animation = 'flashEffect 0.3s ease-out forwards';
+    document.body.appendChild(flash);
+    
+    setTimeout(() => flash.remove(), 300);
 }
 
 // FUNCIÓN PARA CARGAR IMÁGENES
