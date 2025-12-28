@@ -273,6 +273,20 @@ body {
     }
 }
 
+@keyframes lawnMowerAttack {
+    0% {
+        transform: translateX(0) rotateY(0deg);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-150%) rotateY(360deg);
+        opacity: 0;
+    }
+}
+
 .intro-subtitle {
     font-size: 2em;
     color: #f39c12;
@@ -389,15 +403,15 @@ body {
 .menu-content {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.75);
     border-radius: 30px;
     padding: 50px;
     max-width: 700px;
     width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.3);
     animation: slideUp 0.5s ease-out;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 @keyframes slideUp {
@@ -954,7 +968,23 @@ body {
     gap: 10px;
     padding: 20px;
     overflow-y: auto;
-    background: linear-gradient(180deg, rgba(135, 206, 235, 0.5) 0%, rgba(144, 238, 144, 0.4) 50%, rgba(173, 255, 47, 0.3) 100%);
+    background-image: url('Gemini_Generated_Image_4yvj7l4yvj7l4yvj.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+.game-board::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .lane {
@@ -978,12 +1008,13 @@ body {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 8px;
-    background: linear-gradient(135deg, rgba(144, 238, 144, 0.4) 0%, rgba(173, 255, 47, 0.3) 100%);
-    border: 3px dashed #90ee90;
+    background: rgba(255, 255, 255, 0.15);
+    border: 3px solid rgba(255, 255, 255, 0.3);
     border-radius: 10px;
     padding: 12px;
     min-height: 120px;
     position: relative;
+    backdrop-filter: blur(5px);
 }
 
 .garden::before {
@@ -1000,8 +1031,8 @@ body {
 }
 
 .garden-cell {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 255, 240, 0.95) 100%);
-    border: 2px solid #d0f0d0;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.6);
     border-radius: 8px;
     cursor: pointer;
     position: relative;
@@ -1073,6 +1104,54 @@ body {
     }
     100% {
         transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes bombAttack {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.3);
+    }
+    50% {
+        transform: scale(1.5) rotateZ(10deg);
+    }
+    75% {
+        transform: scale(1.2) rotateZ(-10deg);
+    }
+    100% {
+        transform: scale(1) rotateZ(0deg);
+    }
+}
+
+@keyframes iceAttack {
+    0% {
+        transform: scale(1);
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        transform: scale(1.15);
+        filter: hue-rotate(180deg) brightness(1.2);
+    }
+    100% {
+        transform: scale(1);
+        filter: hue-rotate(0deg);
+    }
+}
+
+@keyframes lightAttack {
+    0% {
+        opacity: 1;
+        filter: brightness(1) drop-shadow(0 0 5px rgba(255, 255, 0, 0));
+    }
+    50% {
+        opacity: 1;
+        filter: brightness(1.3) drop-shadow(0 0 20px rgba(255, 255, 0, 0.8));
+    }
+    100% {
+        opacity: 1;
+        filter: brightness(1) drop-shadow(0 0 5px rgba(255, 255, 0, 0));
     }
 }
 

@@ -35,19 +35,20 @@ const PLANTS = {
     light: {
         name: 'Luz',
         cost: 125,
-        damage: 2,
-        cooldown: 1200,
-        range: 350,
-        description: 'Ilumina y daña zombies oscuros'
+        damage: 0,
+        cooldown: 800,
+        range: 0,
+        description: 'Genera soles mágicos sin atacar'
     },
     shield: {
         name: 'Escudo',
         cost: 200,
         damage: 0,
         cooldown: 0,
-        range: 150,
+        range: 0,
+        health: 500,
         protective: true,
-        description: 'Protege plantas cercanas'
+        description: 'Protege plantas - mucha vida, sin ataque'
     }
 };
 
@@ -499,13 +500,45 @@ function plantAttack(plant) {
     const target = zombiesInRange[0];
     const plantType = plant.type;
 
-    // Agregar animación de disparo a la planta con feedback visual
+    // Animaciones únicas por tipo de planta
     plant.element.style.animation = 'none';
     setTimeout(() => {
-        plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
+        switch(plantType) {
+            case 'shooter':
+                // Disparo rápido y repetitivo
+                plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
+                break;
+            case 'bomb':
+                // Expansión y contracción explosiva
+                plant.element.style.animation = 'bombAttack 0.5s ease-in-out';
+                break;
+            case 'ice':
+                // Pulso de congelación
+                plant.element.style.animation = 'iceAttack 0.4s ease-in-out';
+                break;
+            case 'light':
+                // Destello de luz (no ataca)
+                plant.element.style.animation = 'lightAttack 0.3s ease-in-out';
+                break;
+            case 'shield':
+                // Sin ataque
+                break;
+            default:
+                plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
+        }
     }, 10);
 
-    // Crear efecto visual de proyectil
+    // Luz y Escudo NO atacan
+    if (plantType === 'light' || plantType === 'shield') {
+        // Luz da soles cuando aparece
+        if (plantType === 'light') {
+            gameState.suns += 5;
+            updateGameUI();
+        }
+        return;
+    }
+
+    // Crear efecto visual de proyectil para plantas que atacan
     if (PLANTS[plantType].damage > 0) {
         createProjectile(plant, target);
     }
@@ -689,15 +722,18 @@ function moveZombie(zombie) {
         zombie.position -= zombie.currentSpeed;
         zombie.element.style.right = zombie.position + 'px';
 
-        // Verificar si llegó al final (perdió)
+        // Verificar si llegó al final - PODADORA activada
         if (zombie.position <= -100) {
             clearInterval(moveInterval);
+            
+            // Activar podadora - mata todos los zombies de esta fila
+            activateLawnMower(zombie.lane);
+            
+            // Remover este zombie
             zombie.element.remove();
             gameState.lanes[zombie.lane].zombies = gameState.lanes[zombie.lane].zombies.filter(z => z !== zombie);
             gameState.zombies = gameState.zombies.filter(z => z !== zombie);
 
-            if (gameState.gameActive) {
-                loseLevel();
             }
         }
     }, 50);
@@ -994,6 +1030,47 @@ function createSunCollectEffect(zombieElement, amount) {
     document.body.appendChild(floatingText);
     
     setTimeout(() => floatingText.remove(), 1000);
+}
+
+// ACTIVAR PODADORA - MATA TODOS LOS ZOMBIES DE LA FILA
+function activateLawnMower(laneIndex) {
+    const laneElement = gameState.lanes[laneIndex].laneElement;
+    const zombiesInLane = [...gameState.lanes[laneIndex].zombies];
+    
+    // Crear efecto de podadora cortando
+    const lawnMower = document.createElement('div');
+    lawnMower.textContent = '🪚';
+    lawnMower.style.position = 'fixed';
+    lawnMower.style.left = '100%';
+    lawnMower.style.top = laneElement.getBoundingClientRect().top + 'px';
+    lawnMower.style.fontSize = '60px';
+    lawnMower.style.zIndex = '10000';
+    lawnMower.style.pointerEvents = 'none';
+    lawnMower.style.animation = 'lawnMowerAttack 0.8s ease-in-out forwards';
+    document.body.appendChild(lawnMower);
+    
+    // Matar todos los zombies de esta fila después de que la podadora pase
+    setTimeout(() => {
+        zombiesInLane.forEach(zombie => {
+            // Crear efecto de muerte para cada zombi
+            createDeathEffect(zombie.element);
+            
+            // Remover zombi visualmente
+            zombie.element.remove();
+            
+            // Remover de arrays
+            gameState.lanes[laneIndex].zombies = gameState.lanes[laneIndex].zombies.filter(z => z !== zombie);
+            gameState.zombies = gameState.zombies.filter(z => z !== zombie);
+            gameState.zombiesDefeated++;
+            gameState.suns += 25;
+        });
+        
+        // Remover podadora
+        lawnMower.remove();
+        
+        updateGameUI();
+        checkWaveComplete();
+    }, 400);
 }
 
 // FUNCIÓN PARA CARGAR IMÁGENES
