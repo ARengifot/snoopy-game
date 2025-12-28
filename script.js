@@ -368,8 +368,11 @@ function showLevelStory() {
             </div>
             <div class="story-content">
                 <p class="story-intro">${story.intro}</p>
-                <div class="story-snoopy">
-                    <p class="snoopy-quote">"${story.snoopyText}"</p>
+                <div class="story-snoopy" style="display: flex; gap: 20px; align-items: center; margin: 20px 0;">
+                    <img src="${imagePaths.snoopyDialogs}" alt="Snoopy" style="width: 150px; height: 150px; border-radius: 10px; object-fit: cover;">
+                    <div>
+                        <p class="snoopy-quote">"${story.snoopyText}"</p>
+                    </div>
                 </div>
                 <p class="story-dedication">${story.quote}</p>
             </div>
