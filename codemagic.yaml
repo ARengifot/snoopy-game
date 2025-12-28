@@ -1,31 +1,30 @@
 workflows:
-  react-web:
-    name: React Web Build
-    instance_type: mac_mini_m2
+  web-build:
+    name: Web Build
+    instance_type: linux
     max_build_duration: 30
-
+    
     environment:
       node: 18.x
       npm: 9.x
 
     scripts:
       - name: Install dependencies
+        script: npm install
+      
+      - name: Build web app
         script: |
-          cd react-app
-          npm install
-
-      - name: Build React app
-        script: |
-          cd react-app
-          npm run build
-
-      - name: Run tests
-        script: |
-          cd react-app
-          npm test -- --passWithNoTests
+          echo "✅ Web app ready - Snoopy vs Zombies"
+          mkdir -p build
+          cp index.html build/
+          cp -r *.js build/ 2>/dev/null || true
+          cp -r *.css build/ 2>/dev/null || true
+          cp -r *.png build/ 2>/dev/null || true
+          cp -r *.jpg build/ 2>/dev/null || true
+          cp manifest.json build/
 
     artifacts:
-      - react-app/build/**/*
+      - build/**/*
 
     publishing:
       email:
@@ -35,19 +34,53 @@ workflows:
           success: true
           failure: true
 
-  react-native-ios:
-    name: React Native iOS Build
-    instance_type: mac_mini_m2
+  android-build:
+    name: Android Build (Cordova)
+    instance_type: linux
     max_build_duration: 60
-
+    
     environment:
-      xcode: latest
-      cocoapods: default
+      java: 11
       node: 18.x
+      npm: 9.x
+      android_sdk: 33
+      ndk: 23.1.7779620
 
     scripts:
-      - name: Install dependencies
+      - name: Install Cordova
+        script: npm install -g cordova
+
+      - name: Create Cordova project
         script: |
+          cordova create snoopy-android com.game.snoopy SnoopyVsZombies
+          cd snoopy-android
+          cordova platform add android
+
+      - name: Add web files to www folder
+        script: |
+          cd snoopy-android
+          cp ../index.html www/
+          cp ../*.js www/ 2>/dev/null || true
+          cp ../*.css www/ 2>/dev/null || true
+          cp ../*.png www/ 2>/dev/null || true
+          cp ../*.jpg www/ 2>/dev/null || true
+          cp ../manifest.json www/
+
+      - name: Build APK
+        script: |
+          cd snoopy-android
+          cordova build android --release
+
+    artifacts:
+      - snoopy-android/platforms/android/app/build/outputs/apk/release/**/*.apk
+
+    publishing:
+      email:
+        recipients:
+          - tu-email@example.com
+        notify:
+          success: true
+          failure: true
           cd react-app
           npm install
           cd ios

@@ -1,0 +1,16 @@
+{
+  "id": "com.game.snoopy",
+  "name": "Snoopy vs Zombies",
+  "platforms": ["android"],
+  "plugins": {
+    "cordova-plugin-device": {},
+    "cordova-plugin-splashscreen": {},
+    "cordova-plugin-statusbar": {},
+    "cordova-plugin-webview-engine": {}
+  },
+  "preferences": {
+    "DisallowOverscroll": true,
+    "Orientation": "portrait",
+    "android-targetSdkVersion": "33"
+  }
+}
