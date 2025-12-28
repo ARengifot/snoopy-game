@@ -1,74 +1,50 @@
 workflows:
-  web-build:
-    name: Web Build
-    max_build_duration: 30
-    
+  react-native-android:
+    name: React Native Android Build
+    instance_type: mac_mini_m1
+    max_build_duration: 120
     environment:
-      node: 18.20.4
+      vars:
+        PACKAGE_NAME: "com.game.snoopy"
+    triggering:
+      events:
+        - push
     scripts:
       - name: Install dependencies
-        script: npm install
-      
-      - name: Build web app
         script: |
-          echo "✅ Web app ready - Snoopy vs Zombies"
-          mkdir -p build
-          cp index.html build/
-          cp -r *.js build/ 2>/dev/null || true
-          cp -r *.css build/ 2>/dev/null || true
-          cp -r *.png build/ 2>/dev/null || true
-          cp -r *.jpg build/ 2>/dev/null || true
-          cp manifest.json build/
-    artifacts:
-      - build/**/*
-    publishing:
-      email:
-        recipients:
-          - alejo.rengifot@gmail.com
-        notify:
-          success: true
-          failure: true
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
           
-  android-build:
-    name: Android Build (Cordova)
-    max_build_duration: 60
-    
-    environment:
-      java: 17
-      node: 18.20.4
-      
-    scripts:
-      - name: Install Cordova
-        script: npm install -g cordova
-        
-      - name: Create Cordova project
+      - name: Build React app
         script: |
-          cordova create snoopy-android com.game.snoopy SnoopyVsZombies
-          cd snoopy-android
-          cordova platform add android
+          npm run build
+          echo "✅ Build de React completado"
+          ls -la build/
           
-      - name: Add web files to www folder
+      - name: Initialize Capacitor
         script: |
-          cd snoopy-android
-          cp ../index.html www/
-          cp ../*.js www/ 2>/dev/null || true
-          cp ../*.css www/ 2>/dev/null || true
-          cp ../*.png www/ 2>/dev/null || true
-          cp ../*.jpg www/ 2>/dev/null || true
-          cp ../manifest.json www/
+          npx cap init "Snoopy vs Zombies" "com.game.snoopy" --web-dir=build
+          echo "✅ Capacitor inicializado"
+          
+      - name: Add Android platform
+        script: |
+          npx cap add android
+          echo "✅ Plataforma Android agregada"
+          ls -la android/
+          
+      - name: Sync Capacitor
+        script: |
+          npx cap sync android
+          echo "✅ Sync completado"
           
       - name: Build APK
         script: |
-          cd snoopy-android
-          cordova build android --release
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --stacktrace
+          echo ""
+          echo "✅ APK generado:"
+          find app/build/outputs/apk -name "*.apk" -ls
           
     artifacts:
-      - snoopy-android/platforms/android/app/build/outputs/apk/release/**/*.apk
-      
-    publishing:
-      email:
-        recipients:
-          - tu-email@example.com
-        notify:
-          success: true
-          failure: true
+      - android/app/build/outputs/apk/debug/app-debug.apk
