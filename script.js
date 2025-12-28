@@ -105,9 +105,48 @@ const LOVE_MESSAGES = [
     "Eres lo mejor que me pudo pasar 🍀",
     "Te amaré siempre Valentina 🌹",
     "Tú eres mi todo 💖",
-    "Ni plantas ni zombies importan, solo tú 💕",
+    "Alejandro ama a Valentina infinitamente 💕",
     "Feliz mes de amor mi vida 🎂💕"
 ];
+
+// MINI HISTORIAS POR NIVEL
+const LEVEL_STORIES = {
+    1: {
+        title: "El Primer Encuentro",
+        intro: "Snoopy se levanta en su pequeño jardín...",
+        message: "¡Valen! No dejaré que nada te toque 💪",
+        quote: "Nuestro amor comenzó en un simple momento... y ya es infinito.",
+        snoopyText: "¡Alejandro protegerá a Valentina siempre!"
+    },
+    2: {
+        title: "Corazones en Batalla",
+        intro: "Los zombies se multiplican, pero nuestro amor es más fuerte...",
+        message: "¡Por nosotros, por nuestro futuro 💕!",
+        quote: "Cada planta que planto es una promesa de amor para ti.",
+        snoopyText: "¡9 meses de amor no se detienen aquí!"
+    },
+    3: {
+        title: "La Prueba del Amor",
+        intro: "El camino se oscurece, pero tu luz guía mis pasos...",
+        message: "¡Valen, tu amor me da fuerzas! 💖",
+        quote: "Juntos somos invencibles, como el amor que nos une.",
+        snoopyText: "¡Alejandro lucha por Valentina sin rendirse!"
+    },
+    4: {
+        title: "Momento Crítico",
+        intro: "Los zombies más fuertes avanzan, pero nuestro amor también...",
+        message: "¡Te amo, Valentina, eso es todo lo que necesito! ❤️",
+        quote: "En las pruebas más duras, nuestro amor brilla más fuerte.",
+        snoopyText: "¡Este es el momento de demostrar nuestro amor!"
+    },
+    5: {
+        title: "El Encuentro Final",
+        intro: "La batalla definitiva llega... El jefe supremo aparece...",
+        message: "¡VALENTINA! ¡Por ti, por nosotros, VENCEREMOS! 💕",
+        quote: "9 meses de amor, un mismo corazón, una misma meta: VENCER JUNTOS.",
+        snoopyText: "¡Alejandro ama a Valentina y nada lo detendrá!"
+    }
+};
 
 // SISTEMA DE GUARDADO - LOCAL STORAGE
 const SaveSystem = {
@@ -302,7 +341,49 @@ function startLevelGame() {
     // Crear tablero
     createGameBoard();
 
-    // Iniciar juego
+    // Mostrar intro del nivel
+    showLevelStory();
+}
+
+function showLevelStory() {
+    const story = LEVEL_STORIES[gameState.currentLevel];
+    if (!story) {
+        startWaveSystem();
+        return;
+    }
+
+    // Crear modal de historia
+    const storyModal = document.createElement('div');
+    storyModal.className = 'modal active';
+    storyModal.id = 'storyModal';
+    storyModal.innerHTML = `
+        <div class="modal-content story-modal">
+            <div class="story-header">
+                <h3 style="color: #667eea; font-size: 1.8em; margin-bottom: 10px;">⚔️ ${story.title}</h3>
+            </div>
+            <div class="story-content">
+                <p class="story-intro">${story.intro}</p>
+                <div class="story-snoopy">
+                    <p class="snoopy-quote">"${story.snoopyText}"</p>
+                </div>
+                <p class="story-dedication">${story.quote}</p>
+            </div>
+            <div class="story-footer">
+                <button class="btn btn-play" style="margin-top: 20px; width: 200px;" onclick="closeStoryAndStart()">
+                    ¡VAMOS! 💪
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(storyModal);
+}
+
+function closeStoryAndStart() {
+    const modal = document.getElementById('storyModal');
+    if (modal) {
+        modal.remove();
+    }
     startWaveSystem();
 }
 
@@ -418,6 +499,12 @@ function plantAttack(plant) {
     const target = zombiesInRange[0];
     const plantType = plant.type;
 
+    // Agregar animación de disparo a la planta
+    plant.element.style.animation = 'none';
+    setTimeout(() => {
+        plant.element.style.animation = 'plantShoot 0.3s ease-in-out';
+    }, 10);
+
     // Crear efecto visual de proyectil
     if (PLANTS[plantType].damage > 0) {
         createProjectile(plant, target);
@@ -436,6 +523,7 @@ function plantAttack(plant) {
     if (target.health <= 0) {
         target.element.remove();
         gameState.lanes[plant.lane].zombies = gameState.lanes[plant.lane].zombies.filter(z => z !== target);
+        gameState.zombies = gameState.zombies.filter(z => z !== target);
         gameState.zombiesDefeated++;
         gameState.suns += 25;
         updateGameUI();
