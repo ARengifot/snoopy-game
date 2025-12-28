@@ -1,46 +1,74 @@
 workflows:
-  react-native-android:
-    name: React Native Android Build
-    instance_type: mac_mini_m1
-    max_build_duration: 120
+  web-build:
+    name: Web Build
+    max_build_duration: 30
+    
     environment:
-      vars:
-        PACKAGE_NAME: "com.game.snoopy"
-    triggering:
-      events:
-        - push
+      node: 18.20.4
     scripts:
-      - name: Install and build
+      - name: Install dependencies
+        script: npm install
+      
+      - name: Build web app
         script: |
-          npm install
-          npm run build
+          echo "✅ Web app ready - Snoopy vs Zombies"
+          mkdir -p build
+          cp index.html build/
+          cp -r *.js build/ 2>/dev/null || true
+          cp -r *.css build/ 2>/dev/null || true
+          cp -r *.png build/ 2>/dev/null || true
+          cp -r *.jpg build/ 2>/dev/null || true
+          cp manifest.json build/
+    artifacts:
+      - build/**/*
+    publishing:
+      email:
+        recipients:
+          - alejo.rengifot@gmail.com
+        notify:
+          success: true
+          failure: true
           
-      - name: Setup Android
+  android-build:
+    name: Android Build (Cordova)
+    max_build_duration: 60
+    
+    environment:
+      java: 17
+      node: 18.20.4
+      
+    scripts:
+      - name: Install Cordova
+        script: npm install -g cordova
+        
+      - name: Create Cordova project
         script: |
-          npx cap add android || true
-          npx cap sync android
-          # Copy icon if exists
-          if [ -f "snoopy.png" ]; then
-            mkdir -p android/app/src/main/res/mipmap-hdpi
-            mkdir -p android/app/src/main/res/mipmap-mdpi
-            mkdir -p android/app/src/main/res/mipmap-xhdpi
-            mkdir -p android/app/src/main/res/mipmap-xxhdpi
-            mkdir -p android/app/src/main/res/mipmap-xxxhdpi
-            cp snoopy.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-            cp snoopy.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-            cp snoopy.png android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-            cp snoopy.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-            cp snoopy.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-          fi
+          cordova create snoopy-android com.game.snoopy SnoopyVsZombies
+          cd snoopy-android
+          cordova platform add android
+          
+      - name: Add web files to www folder
+        script: |
+          cd snoopy-android
+          cp ../index.html www/
+          cp ../*.js www/ 2>/dev/null || true
+          cp ../*.css www/ 2>/dev/null || true
+          cp ../*.png www/ 2>/dev/null || true
+          cp ../*.jpg www/ 2>/dev/null || true
+          cp ../manifest.json www/
           
       - name: Build APK
         script: |
-          cd android
-          chmod +x ./gradlew
-          ./gradlew assembleDebug
-          echo ""
-          echo "✅ APK generado:"
-          find app/build/outputs/apk -name "*.apk" -ls
+          cd snoopy-android
+          cordova build android --release
           
     artifacts:
-      - android/app/build/outputs/apk/debug/app-debug.apk
+      - snoopy-android/platforms/android/app/build/outputs/apk/release/**/*.apk
+      
+    publishing:
+      email:
+        recipients:
+          - tu-email@example.com
+        notify:
+          success: true
+          failure: true
