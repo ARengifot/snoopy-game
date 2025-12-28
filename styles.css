@@ -253,6 +253,26 @@ body {
     }
 }
 
+@keyframes fall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotateZ(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotateZ(360deg);
+    }
+}
+
+@keyframes victoryFlash {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 .intro-subtitle {
     font-size: 2em;
     color: #f39c12;

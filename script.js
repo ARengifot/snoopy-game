@@ -767,6 +767,9 @@ function winLevel() {
     gameState.gameActive = false;
     gameState.levelWon = true;
 
+    // Crear efecto de victoria
+    createVictoryEffect();
+
     // Calcular puntuación del nivel
     const levelScore = Math.floor((gameState.suns / 100) * 100) + (gameState.zombiesDefeated * 10);
     const currentScore = gameState.levelScores[gameState.currentLevel - 1];
@@ -792,7 +795,9 @@ function winLevel() {
     victoryText.textContent = `¡Ganaste el Nivel ${gameState.currentLevel}!\n\nPuntuación: ${gameState.levelScores[gameState.currentLevel - 1]} pts`;
     victoryMessage.textContent = LOVE_MESSAGES[Math.floor(Math.random() * LOVE_MESSAGES.length)];
 
-    victoryModal.classList.add('active');
+    setTimeout(() => {
+        victoryModal.classList.add('active');
+    }, 500);
 }
 
 function loseLevel() {
@@ -903,6 +908,51 @@ function createShakeEffect() {
     setTimeout(() => {
         gameScreen.style.animation = '';
     }, 500);
+}
+
+// CREAR EFECTO DE VICTORIA CON CONFETI
+function createVictoryEffect() {
+    const colors = ['#FFD700', '#FF6B6B', '#667eea', '#764ba2', '#e74c3c'];
+    
+    // Crear confeti cayendo
+    for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const randomSize = Math.random() * 8 + 4;
+        const randomDelay = Math.random() * 0.5;
+        const randomDuration = Math.random() * 2 + 2.5;
+        
+        confetti.style.position = 'fixed';
+        confetti.style.width = randomSize + 'px';
+        confetti.style.height = randomSize + 'px';
+        confetti.style.background = randomColor;
+        confetti.style.borderRadius = '50%';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = '-10px';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.zIndex = '5000';
+        confetti.style.animation = `fall ${randomDuration}s linear ${randomDelay}s forwards`;
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), (randomDelay + randomDuration) * 1000);
+    }
+    
+    // Crear efecto de flash de luz
+    const flash = document.createElement('div');
+    flash.style.position = 'fixed';
+    flash.style.top = '0';
+    flash.style.left = '0';
+    flash.style.width = '100%';
+    flash.style.height = '100%';
+    flash.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, transparent 70%)';
+    flash.style.pointerEvents = 'none';
+    flash.style.zIndex = '4999';
+    flash.style.animation = 'victoryFlash 0.6s ease-out forwards';
+    
+    document.body.appendChild(flash);
+    
+    setTimeout(() => flash.remove(), 600);
 }
 function createSunCollectEffect(zombieElement, amount) {
     const rect = zombieElement.getBoundingClientRect();
