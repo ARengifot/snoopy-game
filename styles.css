@@ -198,6 +198,28 @@ body {
     }
 }
 
+@keyframes collectSun {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--targetX), var(--targetY)) scale(0.5);
+    }
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.5);
+    }
+}
+
 .intro-subtitle {
     font-size: 2em;
     color: #f39c12;

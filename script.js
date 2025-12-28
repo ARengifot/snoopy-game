@@ -529,6 +529,10 @@ function plantAttack(plant) {
         gameState.zombies = gameState.zombies.filter(z => z !== target);
         gameState.zombiesDefeated++;
         gameState.suns += 25;
+        
+        // Crear efecto visual de recolección de soles
+        createSunCollectEffect(target.element, 25);
+        
         updateGameUI();
 
         // Mensaje de amor aleatorio
@@ -878,6 +882,49 @@ function createDeathEffect(zombieElement) {
     document.body.appendChild(flash);
     
     setTimeout(() => flash.remove(), 300);
+}
+
+// CREAR EFECTO VISUAL DE RECOLECCIÓN DE SOLES
+function createSunCollectEffect(zombieElement, amount) {
+    const rect = zombieElement.getBoundingClientRect();
+    const sunsElement = document.getElementById('suns');
+    const sunsRect = sunsElement.getBoundingClientRect();
+    
+    // Crear múltiples soles flotantes hacia el contador
+    for (let i = 0; i < 3; i++) {
+        const sunParticle = document.createElement('div');
+        sunParticle.textContent = '☀️';
+        sunParticle.style.position = 'fixed';
+        sunParticle.style.left = rect.left + rect.width / 2 + 'px';
+        sunParticle.style.top = rect.top + rect.height / 2 + 'px';
+        sunParticle.style.fontSize = '24px';
+        sunParticle.style.pointerEvents = 'none';
+        sunParticle.style.zIndex = '9999';
+        sunParticle.style.animation = `collectSun 1s ease-in forwards`;
+        sunParticle.style.setProperty('--targetX', sunsRect.left - rect.left + 'px');
+        sunParticle.style.setProperty('--targetY', sunsRect.top - rect.top + 'px');
+        sunParticle.style.animationDelay = (i * 0.1) + 's';
+        document.body.appendChild(sunParticle);
+        
+        setTimeout(() => sunParticle.remove(), 1000);
+    }
+    
+    // Mostrar número flotante
+    const floatingText = document.createElement('div');
+    floatingText.textContent = '+' + amount;
+    floatingText.style.position = 'fixed';
+    floatingText.style.left = rect.left + rect.width / 2 + 'px';
+    floatingText.style.top = rect.top + 'px';
+    floatingText.style.fontSize = '24px';
+    floatingText.style.fontWeight = 'bold';
+    floatingText.style.color = '#FFD700';
+    floatingText.style.pointerEvents = 'none';
+    floatingText.style.zIndex = '9999';
+    floatingText.style.textShadow = '0 0 10px rgba(255, 215, 0, 0.8)';
+    floatingText.style.animation = 'floatUp 1s ease-out forwards';
+    document.body.appendChild(floatingText);
+    
+    setTimeout(() => floatingText.remove(), 1000);
 }
 
 // FUNCIÓN PARA CARGAR IMÁGENES
