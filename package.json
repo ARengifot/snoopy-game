@@ -1,0 +1,41 @@
+{
+  "name": "snoopy-vs-zombies",
+  "version": "2.0.0",
+  "description": "Un videojuego épico de defensa dedicado a 9 meses de amor con Valentina",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "build": "echo 'No se requiere compilación - es un juego web puro'",
+    "test": "echo 'No hay tests configurados'",
+    "lint": "echo 'No hay linter configurado'"
+  },
+  "keywords": [
+    "game",
+    "defense",
+    "snoopy",
+    "zombies",
+    "pwa",
+    "web-app"
+  ],
+  "author": "Para Valentina ❤️",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/snoopy-game.git"
+  },
+  "homepage": "https://github.com/tu-usuario/snoopy-game#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^latest",
+    "electron-builder": "^latest"
+  },
+  "optionalDependencies": {
+    "python-http-server": "Para servir localmente"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%"
+  ]
+}

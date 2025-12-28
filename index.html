@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Snoopy vs Zombies - Un videojuego épico de defensa dedicado a 9 meses de amor">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Snoopy Game">
+    
     <title>Snoopy vs Zombies - 9 Meses de Amor 💕</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🐕</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23667eea' width='180' height='180' rx='40'/><text x='90' y='130' font-size='100' fill='white' text-anchor='middle'>🐕</text></svg>">
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -393,5 +404,29 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registrado exitosamente:', registration);
+                    })
+                    .catch(error => {
+                        console.log('⚠️ Error al registrar Service Worker:', error);
+                    });
+            });
+        }
+
+        // Detectar si la app fue instalada
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('📱 Aplicación lista para instalar');
+        });
+
+        // Notificar cuando se instala
+        window.addEventListener('appinstalled', () => {
+            console.log('🎉 Aplicación instalada exitosamente');
+        });
+    </script>
 </body>
 </html>
