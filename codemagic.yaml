@@ -7,7 +7,6 @@ workflows:
     environment:
       node: 18.x
       npm: 9.x
-
     scripts:
       - name: Install dependencies
         script: npm install
@@ -22,10 +21,8 @@ workflows:
           cp -r *.png build/ 2>/dev/null || true
           cp -r *.jpg build/ 2>/dev/null || true
           cp manifest.json build/
-
     artifacts:
       - build/**/*
-
     publishing:
       email:
         recipients:
@@ -33,29 +30,33 @@ workflows:
         notify:
           success: true
           failure: true
-
+          
   android-build:
     name: Android Build (Cordova)
-    instance_type: linux
+    instance_type: linux_x2
     max_build_duration: 60
     
     environment:
       java: 11
       node: 18.x
       npm: 9.x
-      android_sdk: 33
-      ndk: 23.1.7779620
-
+      vars:
+        ANDROID_SDK_TOOLS: "33.0.2"
+        
     scripts:
+      - name: Install Android SDK tools
+        script: |
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+          
       - name: Install Cordova
         script: npm install -g cordova
-
+        
       - name: Create Cordova project
         script: |
           cordova create snoopy-android com.game.snoopy SnoopyVsZombies
           cd snoopy-android
           cordova platform add android
-
+          
       - name: Add web files to www folder
         script: |
           cd snoopy-android
@@ -65,15 +66,15 @@ workflows:
           cp ../*.png www/ 2>/dev/null || true
           cp ../*.jpg www/ 2>/dev/null || true
           cp ../manifest.json www/
-
+          
       - name: Build APK
         script: |
           cd snoopy-android
           cordova build android --release
-
+          
     artifacts:
       - snoopy-android/platforms/android/app/build/outputs/apk/release/**/*.apk
-
+      
     publishing:
       email:
         recipients:
