@@ -1,0 +1,49 @@
+name: Snoopy vs Zombies
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Verify game files
+      run: |
+        echo "🎮 Verificando archivos del juego..."
+        ls -la
+        test -f index.html && echo "✅ index.html encontrado"
+        test -f styles.css && echo "✅ styles.css encontrado"
+        test -f script.js && echo "✅ script.js encontrado"
+        test -f manifest.json && echo "✅ manifest.json encontrado"
+        test -f service-worker.js && echo "✅ service-worker.js encontrado"
+    
+    - name: Validate JSON files
+      run: |
+        echo "🔍 Validando manifest.json..."
+        node -e "const fs = require('fs'); JSON.parse(fs.readFileSync('manifest.json', 'utf8')); console.log('✅ manifest.json válido');"
+        
+        echo "🔍 Validando package.json..."
+        node -e "const fs = require('fs'); JSON.parse(fs.readFileSync('package.json', 'utf8')); console.log('✅ package.json válido');"
+    
+    - name: Check file sizes
+      run: |
+        echo "📊 Tamaños de archivo:"
+        wc -l index.html styles.css script.js
+    
+    - name: Deploy to GitHub Pages
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
