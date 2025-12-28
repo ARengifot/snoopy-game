@@ -798,12 +798,17 @@ function winLevel() {
 function loseLevel() {
     gameState.gameActive = false;
 
+    // Crear efecto de vibración cuando pierdes
+    createShakeEffect();
+
     const defeatModal = document.getElementById('defeatModal');
     const defeatText = document.getElementById('defeatText');
 
     defeatText.textContent = `Nivel ${gameState.currentLevel} - Los zombies ganaron esta ronda`;
 
-    defeatModal.classList.add('active');
+    setTimeout(() => {
+        defeatModal.classList.add('active');
+    }, 300);
 }
 
 function nextLevel() {
@@ -884,7 +889,21 @@ function createDeathEffect(zombieElement) {
     setTimeout(() => flash.remove(), 300);
 }
 
-// CREAR EFECTO VISUAL DE RECOLECCIÓN DE SOLES
+// CREAR EFECTO DE VIBRACIÓN
+function createShakeEffect() {
+    const gameScreen = document.getElementById('gameScreen');
+    
+    // Aplicar animación de vibración
+    gameScreen.style.animation = 'shake 0.5s ease-in-out';
+    
+    // Reproducir sonido de derrota (si está disponible)
+    // Puedes añadir un sonido aquí si deseas
+    
+    // Remover la animación después de que termine
+    setTimeout(() => {
+        gameScreen.style.animation = '';
+    }, 500);
+}
 function createSunCollectEffect(zombieElement, amount) {
     const rect = zombieElement.getBoundingClientRect();
     const sunsElement = document.getElementById('suns');
