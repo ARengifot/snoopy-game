@@ -297,11 +297,27 @@ function selectLevel(level) {
 
 function loadPlantImages() {
     // Cargar imágenes de las plantas en la barra superior
-    document.getElementById('plantShooter').src = imagePaths.plants.shooter;
-    document.getElementById('plantBomb').src = imagePaths.plants.bomb;
-    document.getElementById('plantIce').src = imagePaths.plants.ice;
-    document.getElementById('plantLight').src = imagePaths.plants.light;
-    document.getElementById('plantShield').src = imagePaths.plants.shield;
+    // Con fallback a emojis si las imágenes fallan
+    const plants = ['shooter', 'bomb', 'ice', 'light', 'shield'];
+    
+    plants.forEach(type => {
+        const imgElement = document.getElementById(`plant${type.charAt(0).toUpperCase() + type.slice(1)}`);
+        if (imgElement) {
+            // Intentar cargar la imagen
+            if (imagePaths && imagePaths.plants && imagePaths.plants[type]) {
+                imgElement.src = imagePaths.plants[type];
+                imgElement.onerror = () => {
+                    // Si falla, mostrar emoji
+                    imgElement.style.display = 'none';
+                    imgElement.parentElement.textContent = window.EMOJI_ASSETS.plants[type] || '🌱';
+                };
+            } else {
+                // Sin ruta de imagen, mostrar emoji directamente
+                imgElement.style.display = 'none';
+                imgElement.parentElement.innerHTML = `<div style="font-size: 40px;">${window.EMOJI_ASSETS.plants[type] || '🌱'}</div>`;
+            }
+        }
+    });
 }
 
 function startLevelGame() {
@@ -440,14 +456,18 @@ function plantOnCell(event, lane, col) {
         return;
     }
 
-    // Crear planta con imagen
+    // Crear planta - IMAGEN
     const plantElement = document.createElement('img');
-    plantElement.src = imagePaths.plants[plantType];
     plantElement.className = 'plant';
-    plantElement.alt = PLANTS[plantType].name;
-    plantElement.style.width = '100%';
-    plantElement.style.height = '100%';
+    plantElement.style.width = '60px';
+    plantElement.style.height = '60px';
     plantElement.style.objectFit = 'contain';
+    
+    // Cargar imagen de la planta
+    const plantImagePath = imagePaths.plants[plantType];
+    plantElement.src = plantImagePath;
+    plantElement.alt = plantType;
+    plantElement.title = PLANTS[plantType].name;
 
     cell.appendChild(plantElement);
     cell.classList.add('occupied');
@@ -461,6 +481,21 @@ function plantOnCell(event, lane, col) {
         lastShot: 0,
         health: PLANTS[plantType].protective ? 500 : 100, // Escudo tiene más vida
         lastDamageTime: 0
+    };
+
+    // Fallback a emoji si la imagen no carga
+    plantElement.onerror = () => {
+        plantElement.style.display = 'none';
+        const emojiDiv = document.createElement('div');
+        emojiDiv.className = 'plant';
+        emojiDiv.style.fontSize = '40px';
+        emojiDiv.style.display = 'flex';
+        emojiDiv.style.alignItems = 'center';
+        emojiDiv.style.justifyContent = 'center';
+        emojiDiv.textContent = window.EMOJI_ASSETS.plants[plantType] || '🌱';
+        emojiDiv.title = PLANTS[plantType].name;
+        cell.appendChild(emojiDiv);
+        plant.element = emojiDiv;
     };
 
     gameState.lanes[lane].plants.push(plant);
@@ -694,15 +729,43 @@ function spawnZombie(type, laneIndex) {
 
     console.log(`🧟 Spawnando zombie tipo: ${type} en carril: ${laneIndex}`, gameState.gameActive);
 
+    // Crear elemento para el zombie - IMAGEN
     const zombieElement = document.createElement('img');
-    zombieElement.src = imagePaths.zombies[type];
-    zombieElement.alt = zombieConfig.name;
     zombieElement.className = 'zombie';
-    zombieElement.style.width = '80px';
-    zombieElement.style.height = '80px';
-    zombieElement.style.objectFit = 'contain';
-    zombieElement.style.right = '0px';
+    zombieElement.style.width = '85px';
+    zombieElement.style.height = '85px';
     zombieElement.style.position = 'absolute';
+    zombieElement.style.right = '0px';
+    zombieElement.style.top = '50%';
+    zombieElement.style.transform = 'translateY(-50%)';
+    zombieElement.style.zIndex = '10';
+    zombieElement.style.objectFit = 'contain';
+    
+    // Cargar imagen del zombie
+    const zombieImagePath = imagePaths.zombies[type];
+    zombieElement.src = zombieImagePath;
+    zombieElement.alt = type;
+    
+    // Fallback a emoji si la imagen no carga
+    zombieElement.onerror = () => {
+        zombieElement.style.display = 'none';
+        const emojiDiv = document.createElement('div');
+        emojiDiv.style.width = '85px';
+        emojiDiv.style.height = '85px';
+        emojiDiv.style.fontSize = '60px';
+        emojiDiv.style.display = 'flex';
+        emojiDiv.style.alignItems = 'center';
+        emojiDiv.style.justifyContent = 'center';
+        emojiDiv.style.position = 'absolute';
+        emojiDiv.style.right = '0px';
+        emojiDiv.style.top = '50%';
+        emojiDiv.style.transform = 'translateY(-50%)';
+        emojiDiv.style.zIndex = '10';
+        emojiDiv.textContent = window.EMOJI_ASSETS.zombies[type] || '🧟';
+        laneElement.appendChild(emojiDiv);
+        // Reemplazar elemento con emoji
+        zombie.element = emojiDiv;
+    };
 
     laneElement.appendChild(zombieElement);
 
