@@ -1,0 +1,59 @@
+{
+  "name": "snoopy-vs-zombies-react",
+  "version": "3.0.0",
+  "description": "Snoopy vs Zombies - React App Edition. Un videojuego épico de defensa dedicado a 9 meses de amor con Valentina",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "serve": "npm run build && serve -s build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [
+    "game",
+    "defense",
+    "snoopy",
+    "zombies",
+    "pwa",
+    "react",
+    "web-app",
+    "mobile-app"
+  ],
+  "author": "Para Valentina ❤️",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/snoopy-game.git"
+  },
+  "homepage": "."
+}
