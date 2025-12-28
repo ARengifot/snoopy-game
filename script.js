@@ -219,14 +219,15 @@ let imagePaths = {
 
 // INICIALIZACIÓN
 window.addEventListener('DOMContentLoaded', () => {
-    initializeGame();
-    loadGameData();
-});
-
-function initializeGame() {
     console.log('🎮 Snoopy vs Zombies - v2.0 Iniciando...');
-    showIntro();
-}
+    loadGameData();
+    
+    // Cargar assets y mostrar intro después de un pequeño delay
+    setTimeout(() => {
+        hideLoadingScreen();
+        showIntro();
+    }, 500);
+});
 
 function loadGameData() {
     const saved = SaveSystem.load();
@@ -238,23 +239,26 @@ function loadGameData() {
     }
 }
 
-function showIntro() {
-    const introScreen = document.getElementById('introScreen');
+function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loadingScreen');
-    
-    // Ocultar pantalla de carga
     if (loadingScreen) {
+        loadingScreen.style.display = 'none';
         loadingScreen.classList.add('hidden');
     }
+}
+
+function showIntro() {
+    const introScreen = document.getElementById('introScreen');
+    if (!introScreen) return;
     
     // Mostrar intro
     introScreen.classList.add('active');
     
-    // Después de 4 segundos, ir al menú
+    // Después de 3 segundos, ir al menú
     setTimeout(() => {
         introScreen.classList.remove('active');
         updateLevelDisplay();
-    }, 4000);
+    }, 3000);
 }
 
 // NAVEGACIÓN DE MENÚS

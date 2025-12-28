@@ -1,82 +1,56 @@
 // CONFIGURACIÓN DE IMÁGENES Y ASSETS
-// Este archivo contiene las URLs de las imágenes necesarias para el juego
+// Este archivo contiene las configuraciones para imágenes locales
 
-const ASSET_CONFIG = {
-    // Imágenes de Snoopy
-    snoopy: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop',
-    
-    // Plantas (usar emojis o URLs)
+// Usa emojis como fallback por defecto
+window.EMOJI_ASSETS = {
     plants: {
-        shooter: '🌻',  // Puedes reemplazar con URL
+        shooter: '🔫',
         bomb: '💣',
         ice: '❄️',
         light: '💡',
         shield: '🛡️'
     },
-    
-    // Zombies (usar emojis o URLs)
     zombies: {
         normal: '🧟',
-        fast: '🏃',
+        fast: '🏃‍♂️',
         strong: '💪',
         armored: '🤖',
         boss: '👹'
     },
-    
-    // Efectos de sonido (opcional)
-    sounds: {
-        shoot: '',
-        explosion: '',
-        victory: '',
-        defeat: ''
+    snoopy: '🐕'
+};
+
+// Variables para almacenar rutas de imágenes locales
+let imagePaths = {
+    snoopy: null,                 // Imagen principal de Snoopy
+    snoopyDialogs: null,          // JPG para diálogos/character
+    plants: {
+        shooter: null,
+        bomb: null,
+        ice: null,
+        light: null,
+        shield: null
+    },
+    zombies: {
+        normal: null,
+        fast: null,
+        strong: null,
+        armored: null,
+        boss: null
     }
 };
 
-// Función para cargar la configuración de imágenes
-function loadAssets() {
-    console.log('Cargando assets del juego...');
-    
-    // Si usas URLs reales en lugar de emojis, descomenta:
-    /*
-    setImagePaths({
-        snoopy: ASSET_CONFIG.snoopy,
-        plants: ASSET_CONFIG.plants,
-        zombies: ASSET_CONFIG.zombies
-    });
-    */
-    
-    // Por ahora usamos emojis como fallback
-    useEmojiAssets();
+// Función para establecer rutas de imágenes locales
+function setImagePaths(paths) {
+    imagePaths = { ...imagePaths, ...paths };
+    console.log('✅ Rutas de imágenes configuradas:', imagePaths);
 }
 
-// Usar emojis como representación visual
-function useEmojiAssets() {
-    // Crear elementos con emojis
-    const plantElements = {
-        shooter: '🌻',
-        bomb: '💣',
-        ice: '❄️',
-        light: '💡',
-        shield: '🛡️'
-    };
-    
-    const zombieElements = {
-        normal: '🧟',
-        fast: '🏃‍♂️',
-        strong: '💪🧟',
-        armored: '🤖',
-        boss: '👹'
-    };
-    
-    // Guardar en variables globales para usar en CSS/HTML
-    window.EMOJI_ASSETS = {
-        plants: plantElements,
-        zombies: zombieElements,
-        snoopy: '🐕'
-    };
-    
-    console.log('Assets emoji cargados correctamente');
+// Función para obtener una imagen (local o emoji de fallback)
+function getAsset(type, name) {
+    const path = imagePaths[type]?.[name];
+    if (path) return path;
+    return window.EMOJI_ASSETS[type]?.[name] || '❓';
 }
 
-// Llamar al cargar la página
-window.addEventListener('DOMContentLoaded', loadAssets);
+console.log('✅ Sistema de assets inicializado (usando emojis como fallback)');
